@@ -1,17 +1,42 @@
-version: '3.8'
+# version: '3.8'
+
+# services:
+#   numba-cuda-app:
+#     image: nvidia/cuda:12.2.0-runtime-ubuntu22.04
+#     container_name: numba_cuda_container
+#     runtime: nvidia
+#     environment:
+#       - NVIDIA_VISIBLE_DEVICES=all
+#     command: >
+#       bash -c "apt-get update &&
+#                apt-get install -y python3 python3-pip &&
+#                pip3 install numpy numba &&
+#                tail -f /dev/null"
+#     volumes:
+#       - ./:/workspace
+#     working_dir: /workspace
+
+#     version: '3.8'
 
 services:
   numba-cuda-app:
     image: nvidia/cuda:12.2.0-runtime-ubuntu22.04
-    container_name: numba_cuda_container
     runtime: nvidia
+
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
+
+    volumes:
+      - ./:/workspace
+
+    working_dir: /workspace
+
+    ports:
+      - "8888:8888"
+
     command: >
       bash -c "apt-get update &&
                apt-get install -y python3 python3-pip &&
-               pip3 install numpy numba &&
-               tail -f /dev/null"
-    volumes:
-      - ./:/workspace
-    working_dir: /workspace
+               pip3 install --upgrade pip &&
+               pip3 install jupyterlab numpy numba &&
+               jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''"
