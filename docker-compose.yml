@@ -4,9 +4,10 @@ services:
   jupyterlab:
     container_name: jupyter-cuda
     user: root
+    # Access to GPU libraries needed for Numba
     image: nvidia/cuda:12.2.0-runtime-ubuntu22.04
     restart: always
-    runtime: nvidia
+    # Enables access to NVIDIA GPUs
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - JUPYTER_TOKEN=token
@@ -25,4 +26,11 @@ services:
                pip3 install --upgrade pip &&
                pip3 install jupyterlab numpy numba &&
                jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='token'"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
 
